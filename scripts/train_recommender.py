@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import argparse
 from pathlib import Path
 import sys
 import yaml
@@ -18,7 +19,10 @@ def load_config(path: str) -> dict:
 
 
 def main():
-    cfg = load_config(os.path.join(REPO_ROOT, "configs/recommender.yaml"))
+    ap = argparse.ArgumentParser("Stage 2: train/predict semantic IDs (RQKMeans)")
+    ap.add_argument("--config", required=True, help="Path to configs/.yaml")
+    args = ap.parse_args()
+    cfg = load_config(args.config)
     for key in ("sequential_data_path", "codes_path", "item_ids_path", "out_dir"):
         if key in cfg and isinstance(cfg[key], str):
             cfg[key] = os.path.abspath(os.path.expanduser(cfg[key]))

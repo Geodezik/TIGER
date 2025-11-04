@@ -18,7 +18,10 @@ def load_config(path: str) -> dict:
 
 
 def main():
-    cfg = load_config(os.path.join(REPO_ROOT, "configs/embedder.yaml"))
+    ap = argparse.ArgumentParser("Stage 1: extract text embeddings")
+    ap.add_argument("--config", required=True, help="Path to configs/.yaml")
+    args = ap.parse_args()
+    cfg = load_config(args.config)
     for k in ("embedding_path", "ids_path", "stats_path", "out_dir"):
         if isinstance(cfg.get(k), str):
             cfg[k] = os.path.abspath(os.path.expanduser(cfg[k]))

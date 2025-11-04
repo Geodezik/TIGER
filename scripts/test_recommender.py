@@ -26,6 +26,7 @@ def main():
     ap = argparse.ArgumentParser("Test recommender")
     ap.add_argument("--eval_max_batches", type=int, default=None, help="override number of batches; None=all")
     ap.add_argument("--model_dir", type=str, help="checkpoint dir (expected to contain .safetensors)")
+    ap.add_argument("--config", required=True, help="Path to configs/.yaml")
     args = ap.parse_args()
 
     cfg = load_config(os.path.join(REPO_ROOT, "configs/recommender.yaml"))
