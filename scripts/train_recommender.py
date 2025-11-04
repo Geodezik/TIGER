@@ -19,7 +19,7 @@ def load_config(path: str) -> dict:
 
 
 def main():
-    ap = argparse.ArgumentParser("Stage 2: train/predict semantic IDs (RQKMeans)")
+    ap = argparse.ArgumentParser("Stage 3: train generative retrieval")
     ap.add_argument("--config", required=True, help="Path to configs/.yaml")
     args = ap.parse_args()
     cfg = load_config(args.config)

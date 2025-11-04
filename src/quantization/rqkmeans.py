@@ -23,7 +23,8 @@ class KMeans:
         tol=1e-4,
         verbose=1,
         random_state=None,
-        gpu_preload=True
+        gpu_preload=True,
+        device=None
     ):
         self.n_clusters = n_clusters
         self.batch_size = batch_size
@@ -34,9 +35,11 @@ class KMeans:
         self.random_state = random_state
         self.cluster_centers_ = None
         self.gpu_preload = gpu_preload
-        self.rank = dist.get_rank()
-        self.world_size = dist.get_world_size()
-        self.device = torch.device(f'cuda')
+        self.rank = dist.get_rank() if dist.is_initialized() else 0
+        self.world_size = dist.get_world_size() if dist.is_initialized() else 1
+        if device is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = torch.device(device)
         self.logger_step = max(self.max_iter // NUM_LOGGER_STEPS, 1)
         self.kmpp_logger_step = max(self.n_clusters // NUM_LOGGER_STEPS, 1)
         self._eps = 1e-12
@@ -126,8 +129,9 @@ class KMeans:
     def fit(self, X):
         np.random.seed(self.random_state + self.rank)
         torch.manual_seed(self.random_state + self.rank)
-        torch.cuda.manual_seed(self.random_state + self.rank)
-        torch.cuda.manual_seed_all(self.random_state + self.rank)
+        if self.device.type == "cuda":
+            torch.cuda.manual_seed(self.random_state + self.rank)
+            torch.cuda.manual_seed_all(self.random_state + self.rank)
 
         X = X.to(self.device) if self.gpu_preload else X
         centroids = self._init_centroids(X)
@@ -176,7 +180,7 @@ class KMeans:
 
 
 class RQKMeans:
-    def __init__(self, num_clusters, num_ids, batch_size, window_size=32, max_iter=300, tol=1e-4, verbose=0, random_state=42, gpu_preload=True):
+    def __init__(self, num_clusters, num_ids, batch_size, window_size=32, max_iter=300, tol=1e-4, verbose=0, random_state=42, gpu_preload=True, device=None):
         self.models = [
             KMeans(
                 n_clusters=num_clusters,
@@ -186,7 +190,8 @@ class RQKMeans:
                 tol=tol,
                 verbose=verbose,
                 random_state=random_state + i,
-                gpu_preload=gpu_preload
+                gpu_preload=gpu_preload,
+                device=device
             ) for i in range(num_ids)
         ]
 

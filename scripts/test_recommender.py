@@ -23,7 +23,7 @@ def load_config(path):
         return yaml.safe_load(f)
 
 def main():
-    ap = argparse.ArgumentParser("Test recommender")
+    ap = argparse.ArgumentParser("Stage 4: test generative retrieval")
     ap.add_argument("--eval_max_batches", type=int, default=None, help="override number of batches; None=all")
     ap.add_argument("--model_dir", type=str, help="checkpoint dir (expected to contain .safetensors)")
     ap.add_argument("--config", required=True, help="Path to configs/.yaml")
