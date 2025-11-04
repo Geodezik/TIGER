@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Prepare requirements for CPU
+        run: |
+          cp requirements.txt requirements.ci.txt
+          # Remove any torch line (e.g., torch==2.6.0+cuXXX) to avoid CUDA wheels on CI
+          sed -i '/^torch==/d' requirements.ci.txt || true
+          sed -i '/^torch@/d' requirements.ci.txt || true
+          sed -i '/^torch~=*/d' requirements.ci.txt || true
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.ci.txt
+          # Install CPU-only PyTorch (compatible wheel for ubuntu-latest)
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install pytest
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=src" >> $GITHUB_ENV
+
+      - name: Run tests
+        run: pytest -q
