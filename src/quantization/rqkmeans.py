@@ -172,7 +172,7 @@ class KMeans:
             batch = X[start:end]
             dists = self._compute_distances(batch.to(self.device), self.cluster_centers_)
             labels[start:end] = torch.argmin(dists, dim=1).cpu()
-        return labels
+        return labels[:-1]
 
     def fit_predict(self, X):
         self.fit(X)
