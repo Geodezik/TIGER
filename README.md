@@ -5,6 +5,7 @@ This repo implements a full, three-stage, TIGER-style generative retrieval pipel
 
 We use the Amazon Beauty dataset accessable at:
 > https://drive.usercontent.google.com/download?id=1qGxgmx7G_WB7JE4Cn_bEcZ_o_NAJLE3G&export=download&authuser=0
+
 and prioritize recall@100 / recall@1000, which are standard in large-scale settings.
 
 # Model
@@ -34,18 +35,25 @@ pip install -r requirements.txt
 1. Extract embeddings.
 Command:
 > python ./scripts/extract_embeddings.py --config ./configs/embedder.yaml
+
 Saves:
 > outputs/.../item_embeddings_raw.npy
+
 > outputs/.../item_embeddings_l2norm.npy
+
 > outputs/.../item_ids.json
+
 > outputs/.../embedding_stats.json
 
 2. Train semantic IDs.
 Command:
 > python ./scripts/train_semids.py --config ./configs/quantizer.yaml
+
 Saves:
 > outputs/.../codes_with_suffix.npy (semantic IDs per item)
+
 > outputs/.../codes.npy, centroids_*.npy (optional)
+
 > outputs/.../summary.json
 
 3. Train your recommender.
