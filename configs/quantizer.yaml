@@ -1,7 +1,7 @@
 embedding_path: ./outputs/beauty_minilm/item_embeddings_raw.npy
 ids_path: ./outputs/beauty_minilm/item_ids.json
 stats_path: ./outputs/beauty_minilm/embedding_stats.json
-num_clusters: 256
+num_clusters: 64
 num_ids: 2
 batch_size: 65536
 max_iter: 300
