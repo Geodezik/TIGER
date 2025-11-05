@@ -28,6 +28,12 @@ These metrics are usually well-correlated with AB tests, especially high-k recal
 The reported values are expected to be achieved with this repo's pipeline and the default configs:
 > 2025-11-05 04:20:21.813 | INFO     | __main__:main:68 - Test | loss 3.1594 | R@10 0.0220 | R@100 0.0560 | R@1000 0.0566
 
+We do not implement kv-caching, we do not make an optimistic goal for the response time. Say, 200 ms per user.
+
+We also focus on generation misses which are quite rare for the TIGER model. Say, we want less than 1% of incorrect semantic sequences in production.
+
+Our pipeline is implemented and checked using 2xA100 40GB VRAM and 32 GB of RAM.
+
 # Quickstart
 Python ≥ 3.11 recommended
 pip install -r requirements.txt
