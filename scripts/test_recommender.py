@@ -66,7 +66,9 @@ def main():
     )
     if get_rank() == 0:
         logger.info(f"Test | loss {val_loss:.4f} | R@10 {r10:.4f} | R@100 {r100:.4f} | R@1000 {r1000:.4f}")
-        metrics_path = os.path.join(cfg.get("out_dir", "./outputs/tiger_encdec"), "metrics.json")
+        metrics_dir = os.path.join("outputs", "metrics")
+        os.makedirs(metrics_dir, exist_ok=True)
+        metrics_path = os.path.join(metrics_dir, "beauty_metrics.json")
         with open(metrics_path, "w") as f:
             json.dump({"loss": val_loss, "R@10": r10, "R@100": r100, "R@1000": r1000}, f, indent=2)
 
