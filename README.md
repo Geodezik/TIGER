@@ -114,6 +114,46 @@ Saves HF-style checkpoints:
 Multi-GPU (example with 2 GPUs 0,1):
 > CUDA_VISIBLE_DEVICES="0,1" torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node 2 ./scripts/test_recommender.py --config ./configs/recommender.yaml --model_dir ./outputs/tiger_encdec/checkpoint-600
 
+# Docker (offline inference)
+
+## Build image
+Before building, make sure model artifacts are present locally (either via `dvc pull` or copied manually).
+
+```bash
+docker build -t ml-app:v1 .
+```
+
+## Run inference
+
+Create a text file where each line is one user history.
+Format:
+
+```text
+user_id item_1 item_2 item_3 ...
+```
+
+Example (sample_input.txt):
+
+```txt
+1 1 2 3 4 5
+2 6 7 8 9 10 4
+3 83 109 110 111
+```
+
+```bash
+mkdir -p out
+
+docker run --rm \
+  -v "$(pwd)/sample_input.txt:/app/input.txt:ro" \
+  -v "$(pwd)/out:/app/out" \
+  ml-app:v1 \
+  --input_path /app/input.txt \
+  --output_path /app/out/preds.csv \
+  --topk 128
+```
+
+The container writes preds.csv with K columns.
+
 # Testing and CI
 Tests cover key parts of quantization and the model (CPU-only).
 GitHub Actions runs the test suite on each push/PR (CI file in .github/workflows/ci.yml).
