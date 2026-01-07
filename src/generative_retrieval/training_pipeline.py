@@ -132,5 +132,7 @@ def run(cfg):
 
     train_with_periodic_val(model, opt, train_dl, eval_dl, device, scaler, cfg["grad_clip"], vocab_sizes, cfg, code2item, prefix_indexer)
 
+    save_pretrained(model, os.path.join(cfg["out_dir"], "checkpoint-final"), cfg)
+
     if dist.is_initialized():
         dist.destroy_process_group()
