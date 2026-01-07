@@ -14,7 +14,7 @@ stages:
     - outputs/beauty_minilm/item_ids.json
     - outputs/beauty_minilm/item_text.json
   build_semantics:
-    cmd: torchrun --rdzv-endpoint=${RDZV_ENDPOINT:-localhost:1234} --nproc_per_node=${NPROC_PER_NODE:-2} scripts/build_semantics.py --config configs/quantizer.yaml
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 scripts/build_semantics.py --config configs/quantizer.yaml
     deps:
     - configs/quantizer.yaml
     - outputs/beauty_minilm/embedding_stats.json
@@ -33,7 +33,7 @@ stages:
     - outputs/beauty_rqkmeans/rqkmeans_config.json
     - outputs/beauty_rqkmeans/summary.json
   train:
-    cmd: torchrun --rdzv-endpoint=${RDZV_ENDPOINT:-localhost:1234} --nproc_per_node=${NPROC_PER_NODE:-2} scripts/train_recommeder.py --config configs/recommender.yaml
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 scripts/train_recommeder.py --config configs/recommender.yaml
     deps:
     - configs/recommender.yaml
     - data/beauty/sequential_data.txt
@@ -44,7 +44,7 @@ stages:
     outs:
     - outputs/tiger_encdec
   evaluate:
-    cmd: torchrun --rdzv-endpoint=${RDZV_ENDPOINT:-localhost:1234} --nproc_per_node=${NPROC_PER_NODE:-2} scripts/test_recommender.py --config configs/recommender.yaml --model_dir outputs/tiger_encdec/checkpoint-final
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 scripts/test_recommender.py --config configs/recommender.yaml --model_dir outputs/tiger_encdec/checkpoint-final
     deps:
       - scripts/test_recommender.py
       - src/generative_retrieval
