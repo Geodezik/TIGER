@@ -1,0 +1,5 @@
+[core]
+    remote = yandex
+['remote "yandex"']
+    url = s3://tiger/dvcstore
+    endpointurl = https://storage.yandexcloud.net

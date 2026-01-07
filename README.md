@@ -3,7 +3,7 @@ This repo implements a full, three-stage, TIGER-style generative retrieval pipel
 - scales to huge catalogs (generate a code instead of enumerating millions of IDs),
 - supports controllable decoding (prefix constraints, business rules), and can unify retrieval with generation.
 
-We use the Amazon Beauty dataset accessable at:
+We use the Amazon Beauty dataset, Raw version accessable at:
 > https://drive.usercontent.google.com/download?id=1qGxgmx7G_WB7JE4Cn_bEcZ_o_NAJLE3G&export=download&authuser=0
 
 and prioritize recall@100 / recall@1000, which are standard in large-scale settings.
@@ -35,8 +35,49 @@ We also focus on generation misses which are quite rare for the TIGER model. Say
 Our pipeline is implemented and checked using 2xA100 40GB VRAM and 32 GB of RAM.
 
 # Quickstart
-Python ≥ 3.11 recommended
-pip install -r requirements.txt
+## Data & Models (DVC)
+
+Large files (datasets, embeddings, semantic IDs, trained checkpoints) are tracked with **DVC** and stored outside Git.
+
+DVC remote: **Yandex Object Storage (S3-compatible)**  
+Bucket: `tiger`  
+Endpoint: `https://storage.yandexcloud.net`
+
+> Credentials are not stored in the repository. To run `dvc pull`, set:
+> `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+
+Requirements: Python >= 3.11
+
+```bash
+git clone <REPO_URL>
+cd <REPO_DIR>
+python -m pip install -r requirements.txt
+
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+
+dvc pull
+dvc repro
+```
+
+The pipeline stages are:
+```md
+- `extract_embeddings`: builds item text embeddings from `data/beauty/meta.json.gz`
+- `build_semantics`: residual quantization (RQKMeans) -> multi-level Semantic IDs
+- `train`: encoder-decoder Transformer trained to generate the next item Semantic ID
+- `evaluate`: evaluates Recall@10/100/1000 and writes metrics to `outputs/metrics/beauty_metrics.json`
+```
+
+## Experiment tracking (MLflow)
+
+MLflow runs are stored locally in `./mlruns`.
+
+Start UI:
+```bash
+mlflow ui --backend-store-uri ./mlruns --host 0.0.0.0 --port 5000
+```
+
+## Manual run (optional override)
 
 1. Extract embeddings.
 Command:

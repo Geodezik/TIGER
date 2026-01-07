@@ -1,0 +1,188 @@
+schema: '2.0'
+stages:
+  extract_embeddings:
+    cmd: python scripts/extract_embeddings.py --config configs/embedder.yaml
+    deps:
+    - path: configs/embedder.yaml
+      hash: md5
+      md5: 3790b01fe3ddd152a75d9166a7594a68
+      size: 372
+    - path: data/beauty/datamaps.json
+      hash: md5
+      md5: 8d790fffb9a231a24f6fdd139bcfc73b
+      size: 1835527
+    - path: data/beauty/meta.json.gz
+      hash: md5
+      md5: f018e35b6c0d58f9737f0556af0cfb1e
+      size: 99156148
+    - path: scripts/extract_embeddings.py
+      hash: md5
+      md5: 6afe3e978a09ae3b046c26fc0d40b9a2
+      size: 1051
+    - path: src/embeddings_extraction
+      hash: md5
+      md5: cd866ca96cfa72e94cf647f8f3650974.dir
+      size: 12356
+      nfiles: 4
+    outs:
+    - path: outputs/beauty_minilm/embedding_stats.json
+      hash: md5
+      md5: 9a81a148b86605148610e2bae2fba6fa
+      size: 16706
+    - path: outputs/beauty_minilm/item_embeddings_l2norm.npy
+      hash: md5
+      md5: 0ae8c58d11d808e6fb4221af19916e8b
+      size: 18587264
+    - path: outputs/beauty_minilm/item_embeddings_raw.npy
+      hash: md5
+      md5: 469c73338dcdb8250fefd711b160b817
+      size: 18587264
+    - path: outputs/beauty_minilm/item_ids.json
+      hash: md5
+      md5: d8690460336870b4930b0ab73b5f8537
+      size: 73597
+    - path: outputs/beauty_minilm/item_text.json
+      hash: md5
+      md5: bb0c0a44b344cb5b8717149ac7c5cb53
+      size: 2097567
+  build_semantics:
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 
+      scripts/build_semantics.py --config configs/quantizer.yaml
+    deps:
+    - path: configs/quantizer.yaml
+      hash: md5
+      md5: a8dbfb32078369789d30f71664d158fe
+      size: 462
+    - path: outputs/beauty_minilm/embedding_stats.json
+      hash: md5
+      md5: 9a81a148b86605148610e2bae2fba6fa
+      size: 16706
+    - path: outputs/beauty_minilm/item_embeddings_raw.npy
+      hash: md5
+      md5: 469c73338dcdb8250fefd711b160b817
+      size: 18587264
+    - path: outputs/beauty_minilm/item_ids.json
+      hash: md5
+      md5: d8690460336870b4930b0ab73b5f8537
+      size: 73597
+    - path: scripts/build_semantics.py
+      hash: md5
+      md5: 792c40db8e021f20bbf06ec7920e7559
+      size: 3123
+    - path: src/quantization
+      hash: md5
+      md5: 53ffc71451496343c2a9bf658c72ba35.dir
+      size: 40410
+      nfiles: 4
+    outs:
+    - path: outputs/beauty_rqkmeans/centroids_0.npy
+      hash: md5
+      md5: c82838daed19a3b8222ac1444088f4e4
+      size: 98432
+    - path: outputs/beauty_rqkmeans/centroids_1.npy
+      hash: md5
+      md5: e89861c032518cef6a2693b48a69ebed
+      size: 98432
+    - path: outputs/beauty_rqkmeans/codes.npy
+      hash: md5
+      md5: 08d43f745dfc146c5f16157b3ea48dab
+      size: 193744
+    - path: outputs/beauty_rqkmeans/codes_str.txt
+      hash: md5
+      md5: 0ec6fa82492ff7fe823fc5d4ad4ec715
+      size: 130984
+    - path: outputs/beauty_rqkmeans/codes_str_with_suffix.txt
+      hash: md5
+      md5: 47c983d5a4d49c4b57f6a53be599fa7a
+      size: 158695
+    - path: outputs/beauty_rqkmeans/codes_with_suffix.npy
+      hash: md5
+      md5: 5fbc9cbb4a43da758ead997cc6887754
+      size: 290552
+    - path: outputs/beauty_rqkmeans/collision_suffix.npy
+      hash: md5
+      md5: bf03e9e74f8c101cc5be02405ac60edd
+      size: 96936
+    - path: outputs/beauty_rqkmeans/rqkmeans_config.json
+      hash: md5
+      md5: 2c456d87a9fd2ead690fd82fb1edc418
+      size: 814
+    - path: outputs/beauty_rqkmeans/summary.json
+      hash: md5
+      md5: 3b2be9dbf30704f4d4722c9e6539ba7a
+      size: 1153
+  train:
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 
+      scripts/train_recommender.py --config configs/recommender.yaml
+    deps:
+    - path: configs/recommender.yaml
+      hash: md5
+      md5: 6c71e94467cd79de8f7b14c3ff245dd6
+      size: 487
+    - path: data/beauty/sequential_data.txt
+      hash: md5
+      md5: cb03635343187f36526ed4ba48102b53
+      size: 1090094
+    - path: outputs/beauty_minilm/item_ids.json
+      hash: md5
+      md5: d8690460336870b4930b0ab73b5f8537
+      size: 73597
+    - path: outputs/beauty_rqkmeans/codes_with_suffix.npy
+      hash: md5
+      md5: 5fbc9cbb4a43da758ead997cc6887754
+      size: 290552
+    - path: scripts/train_recommender.py
+      hash: md5
+      md5: 6d8d16cb78e76bc6b3fd74538c881ef6
+      size: 967
+    - path: src/generative_retrieval
+      hash: md5
+      md5: 737787118c14009a8e41910d31d89ac5.dir
+      size: 78084
+      nfiles: 6
+    outs:
+    - path: outputs/tiger_encdec
+      hash: md5
+      md5: 0051a695555c17555582c79f68462747.dir
+      size: 284826164
+      nfiles: 14
+  evaluate:
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 
+      scripts/test_recommender.py --config configs/recommender.yaml --model_dir 
+      outputs/tiger_encdec/checkpoint-final
+    deps:
+    - path: configs/recommender.yaml
+      hash: md5
+      md5: 6c71e94467cd79de8f7b14c3ff245dd6
+      size: 487
+    - path: data/beauty/sequential_data.txt
+      hash: md5
+      md5: cb03635343187f36526ed4ba48102b53
+      size: 1090094
+    - path: outputs/beauty_minilm/item_ids.json
+      hash: md5
+      md5: d8690460336870b4930b0ab73b5f8537
+      size: 73597
+    - path: outputs/beauty_rqkmeans/codes_with_suffix.npy
+      hash: md5
+      md5: 5fbc9cbb4a43da758ead997cc6887754
+      size: 290552
+    - path: outputs/tiger_encdec
+      hash: md5
+      md5: 0051a695555c17555582c79f68462747.dir
+      size: 284826164
+      nfiles: 14
+    - path: scripts/test_recommender.py
+      hash: md5
+      md5: eadfd0eca65dda326d6a44ce96abdeb6
+      size: 3540
+    - path: src/generative_retrieval
+      hash: md5
+      md5: 737787118c14009a8e41910d31d89ac5.dir
+      size: 78084
+      nfiles: 6
+    outs:
+    - path: outputs/metrics/beauty_metrics.json
+      hash: md5
+      md5: bfd4bb495b816a0164ad4c58172ecda6
+      size: 106

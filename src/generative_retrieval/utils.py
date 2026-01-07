@@ -1,6 +1,7 @@
 import os
 import json
-from loguru import logger
+import hashlib
+from pathlib import Path
 from itertools import islice
 from typing import List, Tuple, Dict
 
@@ -13,6 +14,27 @@ from torch.utils.data import Dataset
 from safetensors.torch import save_file, load_file
 
 import torch.distributed as dist
+
+
+def sha256_file(path: str) -> str:
+    p = Path(path)
+    if not p.exists():
+        return ""
+    h = hashlib.sha256()
+    with p.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def flatten_dict(d, prefix=""):
+    out = {}
+    for k, v in d.items():
+        key = f"{prefix}{k}" if prefix == "" else f"{prefix}.{k}"
+        if isinstance(v, dict):
+            out.update(flatten_dict(v, key))
+        else:
+            out[key] = v
+    return out
 
 
 def ddp_init():
