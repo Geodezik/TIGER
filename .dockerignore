@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.git/
+.dvc/
+.dvc/cache/
+**/.DS_Store
+mlruns/
+data/
+outputs/*
+!outputs/tiger_encdec/final/**
+!outputs/beauty_rqkmeans/codes_with_suffix.npy
+!outputs/beauty_minilm/item_ids.json
