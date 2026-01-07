@@ -33,13 +33,13 @@ stages:
     - outputs/beauty_rqkmeans/rqkmeans_config.json
     - outputs/beauty_rqkmeans/summary.json
   train:
-    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 scripts/train_recommeder.py --config configs/recommender.yaml
+    cmd: torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node=2 scripts/train_recommender.py --config configs/recommender.yaml
     deps:
     - configs/recommender.yaml
     - data/beauty/sequential_data.txt
     - outputs/beauty_minilm/item_ids.json
     - outputs/beauty_rqkmeans/codes_with_suffix.npy
-    - scripts/train_recommeder.py
+    - scripts/train_recommender.py
     - src/generative_retrieval
     outs:
     - outputs/tiger_encdec
