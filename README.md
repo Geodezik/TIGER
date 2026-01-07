@@ -62,12 +62,19 @@ dvc repro
 
 The pipeline stages are:
 ```md
-## DVC pipeline
-
 - `extract_embeddings`: builds item text embeddings from `data/beauty/meta.json.gz`
 - `build_semantics`: residual quantization (RQKMeans) -> multi-level Semantic IDs
 - `train`: encoder-decoder Transformer trained to generate the next item Semantic ID
 - `evaluate`: evaluates Recall@10/100/1000 and writes metrics to `outputs/metrics/beauty_metrics.json`
+```
+
+## Experiment tracking (MLflow)
+
+MLflow runs are stored locally in `./mlruns`.
+
+Start UI:
+```bash
+mlflow ui --backend-store-uri ./mlruns --host 0.0.0.0 --port 5000
 ```
 
 ## Manual run (optional override)
