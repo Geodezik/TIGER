@@ -54,5 +54,5 @@ stages:
       - outputs/beauty_minilm/item_ids.json
       - outputs/tiger_encdec
     metrics:
-      - outputs/tiger_encdec/metrics.json:
+      - outputs/metrics/beauty_metrics.json:
           cache: false
