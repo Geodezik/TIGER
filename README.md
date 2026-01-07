@@ -114,7 +114,7 @@ Saves HF-style checkpoints:
 Multi-GPU (example with 2 GPUs 0,1):
 > CUDA_VISIBLE_DEVICES="0,1" torchrun --rdzv-endpoint=localhost:1234 --nproc_per_node 2 ./scripts/test_recommender.py --config ./configs/recommender.yaml --model_dir ./outputs/tiger_encdec/checkpoint-600
 
-# Docker (offline inference)
+# Docker (offline CPU inference)
 
 ## Build image
 Before building, make sure model artifacts are present locally (either via `dvc pull` or copied manually).
