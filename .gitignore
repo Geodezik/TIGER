@@ -1,0 +1,17 @@
+cat >> .gitignore << 'EOF'
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Local artifacts
+outputs/
+*.npy
+*.safetensors
+*.pt
+*.pth
+
+# OS / editor
+.DS_Store
+.vscode/
+EOF
