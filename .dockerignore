@@ -7,6 +7,6 @@ __pycache__/
 mlruns/
 data/
 outputs/*
-!outputs/tiger_encdec/final/**
+!outputs/tiger_encdec/checkpoint-final/**
 !outputs/beauty_rqkmeans/codes_with_suffix.npy
 !outputs/beauty_minilm/item_ids.json

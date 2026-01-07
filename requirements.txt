@@ -9,3 +9,4 @@ sentence-transformers==5.1.2
 tokenizers==0.21.0
 torch==2.6.0+cu126
 transformers==4.49.0
+

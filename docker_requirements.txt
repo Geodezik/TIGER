@@ -1,0 +1,7 @@
+loguru==0.7.3
+numpy==1.26.4
+pandas==2.2.3
+PyYAML==6.0.2
+safetensors==0.5.3
+transformers==4.49.0
+
