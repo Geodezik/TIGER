@@ -1,0 +1,7 @@
+FROM pytorch/torchserve:latest
+RUN pip install --no-cache-dir numpy loguru PyYAML safetensors
+WORKDIR /home/model-server
+RUN mkdir -p /home/model-server/model-store
+COPY torchserve/config.properties /home/model-server/config.properties
+CMD ["torchserve", "--start", "--ncs", "--model-store", "model-store", "--ts-config", "config.properties", "--disable-token-auth"]
+

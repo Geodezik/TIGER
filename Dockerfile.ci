@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY docker_requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.6.0 && pip install --no-cache-dir --index-url https://pypi.org/simple -r /app/requirements.txt
+COPY src /app/src
+COPY configs /app/configs
+ENV PYTHONPATH=/app/src
+ENTRYPOINT ["python", "-m", "src.predict"]
+
