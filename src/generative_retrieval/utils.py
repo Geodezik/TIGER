@@ -484,7 +484,7 @@ def save_pretrained(model, save_dir: str, cfg: dict):
     save_file(core.state_dict(), os.path.join(save_dir, "model.safetensors"))
 
 
-def from_pretrained(model_cls, load_dir: str, device, override_cfg: dict | None = None):
+def from_pretrained(model_cls, load_dir: str, device, override_cfg: dict = None):
     """
     HF-like: loads config.json + weights, returns instantiated model on device.
     override_cfg can override some config keys (e.g., beam_size, batch_size) if desired.
@@ -505,7 +505,6 @@ def from_pretrained(model_cls, load_dir: str, device, override_cfg: dict | None 
         dropout=saved_cfg["dropout"],
     ).to(device)
 
-    # Load weights (safetensors preferred if present)
     weights_safe = os.path.join(load_dir, "model.safetensors")
     state = load_file(weights_safe, device="cpu")
     model.load_state_dict(state, strict=True)
