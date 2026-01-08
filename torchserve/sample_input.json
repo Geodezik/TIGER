@@ -1,0 +1,7 @@
+{
+  "topk": 4,
+  "instances": [
+    {"user_id": "1", "item_ids": [1, 2, 3, 4]},
+    {"user_id": "2", "item_ids": [6, 7, 8]}
+  ]
+}

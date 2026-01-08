@@ -154,6 +154,75 @@ docker run --rm \
 
 The container writes preds.csv with K columns.
 
+# TorchServe (online inference)
+
+## Build model archive (.mar)
+```bash
+python scripts/export_torchserve.py \
+  --model_dir outputs/tiger_encdec/checkpoint-final \
+  --out_dir torchserve_artifacts
+
+cp outputs/beauty_rqkmeans/codes_with_suffix.npy torchserve_artifacts/
+cp outputs/beauty_minilm/item_ids.json torchserve_artifacts/
+
+mkdir -p model-store
+torch-model-archiver \
+  --model-name mymodel \
+  --version 1.0 \
+  --serialized-file torchserve_artifacts/model.pt \
+  --handler torchserve/handler.py \
+  --extra-files "torchserve_artifacts/model_config.json,torchserve_artifacts/codes_with_suffix.npy,torchserve_artifacts/item_ids.json,torchserve_artifacts/model.py,torchserve_artifacts/utils.py" \
+  --export-path model-store \
+  --force
+```
+
+## Build and run server + test predict
+```bash
+docker build -t mymodel-serve:v1 -f torchserve/Dockerfile .
+docker run -d --name tiger-ts -p 8080:8080 -p 8081:8081 mymodel-serve:v1
+
+curl -X POST "http://localhost:8080/predictions/mymodel" \
+  -H "Content-Type: application/json" \
+  --data-binary @torchserve/sample_input.json
+```
+
+The above command uses sample_input.json, it can look like this:
+```text
+{
+  "topk": 4,
+  "instances": [
+    {"user_id": "1", "item_ids": [1, 2, 3, 4]},
+    {"user_id": "2", "item_ids": [6, 7, 8]}
+  ]
+}
+```
+
+From curl we expect an output like this:
+```text
+{
+  "predictions": [
+    {
+      "user_id": "1",
+      "predictions": [
+        44,
+        39,
+        10521,
+        3288
+      ]
+    },
+    {
+      "user_id": "2",
+      "predictions": [
+        4313,
+        5367,
+        1667,
+        510
+      ]
+    }
+  ]
+}
+```
+
 # Testing and CI
 Tests cover key parts of quantization and the model (CPU-only).
 GitHub Actions runs the test suite on each push/PR (CI file in .github/workflows/ci.yml).
