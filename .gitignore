@@ -14,4 +14,9 @@ outputs/
 # OS / editor
 .DS_Store
 .vscode/
+
+
+!*.dvc
+!**/*.dvc
+
 EOF
