@@ -1,0 +1,6 @@
+outs:
+- md5: 544f0edb30c3a2b1c1cc1821b518488c.dir
+  size: 78573316
+  nfiles: 5
+  hash: md5
+  path: torchserve

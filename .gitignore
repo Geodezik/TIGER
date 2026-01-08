@@ -1,22 +1,9 @@
 cat >> .gitignore << 'EOF'
-# Python
-__pycache__/
-*.pyc
-*.pyo
-
-# Local artifacts
-outputs/
-*.npy
-*.safetensors
-*.pt
-*.pth
-
-# OS / editor
-.DS_Store
-.vscode/
-
-
-!*.dvc
-!**/*.dvc
-
+outputs/**
+!outputs/
+!outputs/**/
+!outputs/*.dvc
+!outputs/**/*.dvc
+!outputs/.gitignore
+!outputs/**/.gitignore
 EOF
